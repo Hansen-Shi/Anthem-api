@@ -12,8 +12,12 @@ mongoose_1.connect(uri, (err) => {
 });
 exports.userSchema = new mongoose_1.Schema({
     username: String,
-    password: String
-});
+    password: String,
+    image: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+}, { timestamps: { createdAt: "createdDate", updatedAt: "updatedDate" } });
 const User = mongoose_1.model("plebeian", exports.userSchema);
 exports.default = User;
 //# sourceMappingURL=user.js.map

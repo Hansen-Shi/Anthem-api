@@ -17,10 +17,23 @@ export class Controller {
     public postHello(req: express.Request, res: express.Response): void {
         res.send(req.body);
     }
+    public getAUser(req: express.Request, res: express.Response): void {
+        User.findOne({username: req.body.username})
+        .exec()
+        .then((doc) => {
+            console.log(doc);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
     public createUser(req: express.Request, res: express.Response): void {
         const person = new User({
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email
         });
         person.save()
         .then((result) => {

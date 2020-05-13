@@ -12,7 +12,16 @@ connect (uri, (err: any) => {
 
 export const userSchema = new Schema({
     username: String,
-    password: String
+    password: String,
+    image: String,
+    firstName: String,
+    lastName: String,
+    email: String,
+    playlists: []
+
+}, 
+{
+    timestamps: {createdAt: "createdDate", updatedAt: "updatedDate"} 
 });
 
 const User = model("plebeian", userSchema);

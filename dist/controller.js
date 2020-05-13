@@ -20,10 +20,22 @@ class Controller {
     postHello(req, res) {
         res.send(req.body);
     }
+    getAUser(req, res) {
+        user_1.default.findOne({ username: req.body.username })
+            .exec()
+            .then((doc) => {
+            console.log(doc);
+        })
+            .catch((err) => {
+            console.log(err);
+        });
+    }
     createUser(req, res) {
         const person = new user_1.default({
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName
         });
         person.save()
             .then((result) => {
