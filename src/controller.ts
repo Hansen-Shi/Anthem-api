@@ -7,11 +7,11 @@ export class Controller {
         .exec()
         .then((doc) => {
             console.log(doc);
-            res.status(200).json(doc);
+            res.json(doc);
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({error: err});
+            res.json({error: err});
         });
     }
     public postHello(req: express.Request, res: express.Response): void {
@@ -22,13 +22,14 @@ export class Controller {
             username: req.body.username,
             password: req.body.password
         });
-        person.save((err: any) => {
-            if (err) {
-                console.log(err);
-                res.send(err);
-            } else {
-                res.send(person);
-            }
+        person.save()
+        .then((result) => {
+            console.log(result);
+            res.json(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.json(err);
         });
     }
 }
