@@ -6,8 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("./models/user"));
 class Controller {
     getUsers(req, res) {
-        const users = user_1.default.find();
-        console.log(users);
+        const id = "5eb9bdcb00d1054290de227a";
+        user_1.default.find()
+            .exec()
+            .then((doc) => {
+            console.log(doc);
+            res.status(200).json(doc);
+        })
+            .catch((err) => {
+            console.log(err);
+            res.status(500).json({ error: err });
+        });
     }
     postHello(req, res) {
         res.send(req.body);
