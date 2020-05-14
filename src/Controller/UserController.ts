@@ -49,4 +49,21 @@ export class UserController {
             res.json(err);
         });
     }
+    //TODO: request that accepts user and password and attempts to log them in
+
+    //TODO: request that updates the users refresh token in the database
+
+    //TODO: all of /user/playlists/
+
+    /*
+        TODO: song schema that is a tuple of the type and then the uri for the song
+         * service: {spotify, soundcloud, applemusic, etc}
+         * everything else to do with a song(time,title,artist)
+     */
+    //so users have playlists and playlists have songs.
+
+    //TODO: playlist controlle
+
+
+
 }
