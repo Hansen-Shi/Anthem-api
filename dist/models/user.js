@@ -5,6 +5,7 @@ const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retry
 mongoose_1.connect(uri, (err) => {
     if (err) {
         console.log("oh no");
+        console.log(err.toString());
     }
     else {
         console.log("we did it reddit");
@@ -17,6 +18,7 @@ exports.userSchema = new mongoose_1.Schema({
     firstName: String,
     lastName: String,
     email: String,
+    spotifyRefreshToken: String,
     playlists: []
 }, {
     timestamps: { createdAt: "createdDate", updatedAt: "updatedDate" }

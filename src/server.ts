@@ -3,9 +3,9 @@ import bodyParser from "body-parser";
 import express from "express";
 import {ApiRouter} from "./router";
 import * as querystring from "querystring";
-import * as cors from "cors";
+import cors from "cors";
 import * as request from "request";
-import * as cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 
 class Application {
     public app: express.Application;
@@ -15,6 +15,8 @@ class Application {
         this.app = express();
         this.port = +process.env.serverPort || 3000;
         this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(cookieParser());
+        this.app.use(cors());
         this.app.use(bodyParser.json());
         this.initCors();
     }

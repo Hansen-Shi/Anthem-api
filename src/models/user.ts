@@ -5,6 +5,7 @@ const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Use
 connect (uri, (err: any) => {
     if (err) {
         console.log("oh no");
+        console.log(err.toString());
     } else {
         console.log("we did it reddit");
     }
@@ -17,6 +18,7 @@ export const userSchema = new Schema({
     firstName: String,
     lastName: String,
     email: String,
+    spotifyRefreshToken: String,
     playlists: []
 
 },

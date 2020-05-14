@@ -7,11 +7,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
 const router_1 = require("./router");
+const cors_1 = __importDefault(require("cors"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 class Application {
     constructor() {
         this.app = express_1.default();
         this.port = +process.env.serverPort || 3000;
         this.app.use(body_parser_1.default.urlencoded({ extended: false }));
+        this.app.use(cookie_parser_1.default());
+        this.app.use(cors_1.default());
         this.app.use(body_parser_1.default.json());
         this.initCors();
     }
