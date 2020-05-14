@@ -19,9 +19,9 @@ export const userSchema = new Schema({
     email: String,
     playlists: []
 
-}, 
+},
 {
-    timestamps: {createdAt: "createdDate", updatedAt: "updatedDate"} 
+    timestamps: {createdAt: "createdDate", updatedAt: "updatedDate"}
 });
 
 const User = model("plebeian", userSchema);
