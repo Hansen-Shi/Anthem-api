@@ -5,6 +5,9 @@ import User from "../models/user";
 
 export class UserController {
 
+    /*
+        Gets all users from the DB.
+     */
     public getAllUsers(req: express.Request, res: express.Response): void {
         console.log("redirected to /hello");
         User.find()
@@ -19,6 +22,9 @@ export class UserController {
             });
     }
 
+    /*
+        Gets all of a users information from their username
+     */
     public getAUser(req: express.Request, res: express.Response): void {
         User.findOne({ username: req.body.username })
             .exec()
@@ -31,6 +37,9 @@ export class UserController {
                 res.json(err);
             });
     }
+    /*
+      Adds a user to the database upon the creation of an account
+     */
     public createUser(req: express.Request, res: express.Response): void {
         const person = new User({
             username: req.body.username,
@@ -50,12 +59,16 @@ export class UserController {
             });
     }
 
+    /*
+        handling login auth
+     */
     public login(req: express.Request, res: express.Response): void {
         const {
             username,
             password
         } = req.body;
 
+        const stayLoggedIn = req.body.stayLoggedIn;
         if (!username || !password) {
             res.status(400).json({
                 message: "put in your info nitwit"
@@ -74,7 +87,10 @@ export class UserController {
                     });
                 }
                 else {
-                    res.redirect("/api/hello");
+
+                    res.json({
+                        message: 'success!'
+                    })
                 }
             })
         }

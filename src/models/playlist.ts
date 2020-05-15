@@ -24,3 +24,4 @@ export const playlistSchema = new Schema({
 
 const Playlist = model("playlist", playlistSchema);
 export default Playlist;
+//name, desc, image, lists of songs.
