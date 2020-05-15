@@ -5,7 +5,7 @@ import * as cors from "cors";
 import express from "express";
 import * as querystring from "querystring";
 import * as request from "request";
-import User from "../models/user";
+import Playlist from "../models/playlist";
 
 //delete later
 const myRefreshToken  = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0'
@@ -26,7 +26,21 @@ export class PlaylistController{
         Accepts in a logged in user (verified by token of some sort or some shit), a playlist name, description, and optionally, an image upload.
      */
     public createPlaylist(req: express.Request, res: express.Response): void{
-
+        const playlist = new Playlist({
+            userId: req.body.userId,
+            name: req.body.name,
+            description: req.body.description,
+            image: req.body.image
+        })
+        playlist.save()
+        .then((result) => {
+            console.log(result);
+            res.json(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.json(err);
+        })
 
     }
     /*

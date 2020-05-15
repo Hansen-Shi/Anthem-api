@@ -20,7 +20,9 @@ export const songSchema = new Schema({
         type: Number
     }, 
     artist: String,
-    image: String
+    image: String,
+    type: String,
+    index: String
 });
 
 const Song = model("song", songSchema);

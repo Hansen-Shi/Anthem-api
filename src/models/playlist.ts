@@ -12,12 +12,17 @@ connect (uri, (err: any) => {
 });
 
 export const playlistSchema = new Schema({
+    userId: String,
     name: {
         type: String,
-        required: true
+        required: true,
+        default: 'default'
     },
     songs: [],
-    image: String,
+    image: {
+        type: String,
+        default : null
+    },
     description: String
 
 });
