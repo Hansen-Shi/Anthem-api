@@ -1,0 +1,1 @@
+//songid, type, index (songid for spotifiy is just spotify URI. for soundcloud it may just be the url. etc.)

@@ -6,6 +6,7 @@ import express from "express";
 import * as querystring from "querystring";
 import * as request from "request";
 import User from "../models/user";
+import StringUtilities from "../Utility/StringUtilities";
 
 //delete later
 const myRefreshToken  = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0'
@@ -16,6 +17,10 @@ const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
 const stateKey = "spotify_auth_state";
 
 export class SpotifyController {
+    /*
+        Gets all the spotify playlists from a spotify user. Could be used in later functionality with importing whole playlists from spotify into your existing playlists or copying it to create a playlist.
+        honestly we will add the option to import to import one or all of your spotify playlists if you want. We would use this and then just a convert and save thing.
+     */
     public getAllPlaylistsFromUser(req: express.Request, res: express.Response): void{
 
         const authOptions = {
@@ -56,18 +61,13 @@ export class SpotifyController {
         });
 
     }
-    public createToken(req: express.Request, res: express.Response): void {
-        function generateRandomString(length: number) {
-            let state = "";
-            const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-            for (let i = 0; i < length; i++) {
-                state += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            return state;
-        }
+    /*
+        This is the handling of logging your account into the spotify service so we can access your playlists and songs and what not.
+     */
+    public authorizeSpotifyLogin(req: express.Request, res: express.Response): void {
 
-        const state = generateRandomString(16);
+        const state = StringUtilities.generateRandomString(16);
         res.cookie(stateKey, state);
 
         // your application requests authorization
