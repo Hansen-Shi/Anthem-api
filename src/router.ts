@@ -11,7 +11,7 @@ export class ApiRouter {
     public getRouter(): express.Router {
         this.router.get("/hello", this.userController.getAllUsers);
         this.router.post("/hello", this.userController.createUser);
-        this.router.post("/testingLogin", this.userController.login);
+        this.router.post("/login", this.userController.login);
         this.router.get("/login", this.spotifyController.createToken);
         this.router.get("/playlists", this.spotifyController.getAllPlaylistsFromUser);
         this.router.get("/callback", this.spotifyController.callback);

@@ -52,7 +52,6 @@ export class UserController {
     }
 
     public login(req: express.Request, res: express.Response): void {
-
         const {
             username,
             password
@@ -76,9 +75,7 @@ export class UserController {
                     });
                 }
                 else {
-                    res.json({
-                        message: 'success!'
-                    })
+                    res.redirect("/api/hello");
                 }
             })
         }

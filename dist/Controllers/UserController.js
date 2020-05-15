@@ -67,9 +67,7 @@ class UserController {
                     });
                 }
                 else {
-                    res.json({
-                        message: 'success!'
-                    });
+                    res.redirect("/api/hello");
                 }
             });
         }
