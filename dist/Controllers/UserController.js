@@ -23,10 +23,12 @@ class UserController {
         user_1.default.findOne({ username: req.body.username })
             .exec()
             .then((doc) => {
-            console.log(doc);
+            console.log(doc._id.toString());
+            res.json(doc);
         })
             .catch((err) => {
             console.log(err);
+            res.json(err);
         });
     }
     createUser(req, res) {

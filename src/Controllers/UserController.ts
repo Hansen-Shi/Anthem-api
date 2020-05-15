@@ -2,9 +2,6 @@
 
 import express from "express";
 import User from "../models/user";
-import bcrypt from 'bcrypt';
-import { IUserDocument } from '../Interfaces/IUserDocument';
-
 
 export class UserController {
 
@@ -26,10 +23,12 @@ export class UserController {
         User.findOne({ username: req.body.username })
             .exec()
             .then((doc) => {
-                console.log(doc);
+                console.log(doc._id.toString());
+                res.json(doc);
             })
             .catch((err) => {
                 console.log(err);
+                res.json(err);
             });
     }
     public createUser(req: express.Request, res: express.Response): void {

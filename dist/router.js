@@ -14,7 +14,7 @@ class ApiRouter {
     }
     // Creates the routes for this router and returns a populated router object
     getRouter() {
-        this.router.get("/hello", this.userController.getAllUsers);
+        this.router.get("/hello", this.userController.getAUser);
         this.router.post("/hello", this.userController.createUser);
         this.router.post("/login", this.userController.login);
         this.router.get("/login", this.spotifyController.createToken);
