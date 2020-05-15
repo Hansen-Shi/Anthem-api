@@ -28,13 +28,12 @@ export const playlistSchema = new Schema({
 
 });
 
-playlistSchema.post("save", function(next){
+playlistSchema.post("save", function(next) {
     const playlistId = this._id.toString();
-    
-    if (User.exists({_id: this.userId})){
+    if (User.exists({_id: this.userId})) {
         User.findByIdAndUpdate(this.userId, {$addToSet: {playlists: playlistId}});
     }
-})
+});
 
 const Playlist = model("playlist", playlistSchema);
 export default Playlist;
