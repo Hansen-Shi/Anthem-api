@@ -1,4 +1,5 @@
 import {connect, model, Schema} from "mongoose";
+import User from "../models/user";
 
 const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Playlist?retryWrites=true&w=majority";
 
@@ -16,7 +17,7 @@ export const playlistSchema = new Schema({
     name: {
         type: String,
         required: true,
-        default: 'default'
+        default: "default"
     },
     songs: [],
     image: {
@@ -27,6 +28,14 @@ export const playlistSchema = new Schema({
 
 });
 
+playlistSchema.post("save", function(next){
+    const playlistId = this._id.toString();
+    
+    if (User.exists({_id: this.userId})){
+        User.findByIdAndUpdate(this.userId, {$addToSet: {playlists: playlistId}});
+    }
+})
+
 const Playlist = model("playlist", playlistSchema);
 export default Playlist;
-//name, desc, image, lists of songs.
+// name, desc, image, lists of songs.

@@ -18,7 +18,7 @@ export const songSchema = new Schema({
     },
     length: {
         type: Number
-    }, 
+    },
     artist: String,
     image: String,
     type: String,
@@ -27,4 +27,4 @@ export const songSchema = new Schema({
 
 const Song = model("song", songSchema);
 export default Song;
-//songid, type, index (songid for spotifiy is just spotify URI. for soundcloud it may just be the url. etc.)
+// songid, type, index (songid for spotifiy is just spotify URI. for soundcloud it may just be the url. etc.)

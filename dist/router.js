@@ -6,18 +6,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const UserController_1 = require("./Controllers/UserController");
 const SpotifyController_1 = require("./Controllers/SpotifyController");
+const PlaylistController_1 = require("./Controllers/PlaylistController");
 class ApiRouter {
     constructor() {
         this.router = express_1.default.Router();
         this.userController = new UserController_1.UserController();
         this.spotifyController = new SpotifyController_1.SpotifyController();
+        this.playlistController = new PlaylistController_1.PlaylistController();
     }
     // Creates the routes for this router and returns a populated router object
     getRouter() {
         this.router.get("/hello", this.userController.getAUser);
         this.router.post("/hello", this.userController.createUser);
-        this.router.post("/login", this.userController.login);
-        this.router.get("/login", this.spotifyController.createToken);
+        this.router.post("/testingLogin", this.userController.login);
+        this.router.post("/createPlaylist", this.playlistController.createPlaylist);
+        this.router.get("/login", this.spotifyController.authorizeSpotifyLogin);
         this.router.get("/playlists", this.spotifyController.getAllPlaylistsFromUser);
         this.router.get("/callback", this.spotifyController.callback);
         this.router.get("/spotify_access_token", this.spotifyController.getAccessTokenFromRefreshToken);

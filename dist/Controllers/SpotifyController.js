@@ -7,9 +7,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const querystring = __importStar(require("querystring"));
 const request = __importStar(require("request"));
+const StringUtilities_1 = __importDefault(require("../Utility/StringUtilities"));
 //delete later
 const myRefreshToken = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0';
 const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
@@ -17,6 +21,10 @@ const client_secret = "ba5a2acd5e174889a57ee849a81e92d8"; // Your secret
 const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
 const stateKey = "spotify_auth_state";
 class SpotifyController {
+    /*
+        Gets all the spotify playlists from a spotify user. Could be used in later functionality with importing whole playlists from spotify into your existing playlists or copying it to create a playlist.
+        honestly we will add the option to import to import one or all of your spotify playlists if you want. We would use this and then just a convert and save thing.
+     */
     getAllPlaylistsFromUser(req, res) {
         const authOptions = {
             body: {
@@ -53,16 +61,11 @@ class SpotifyController {
             }
         });
     }
-    createToken(req, res) {
-        function generateRandomString(length) {
-            let state = "";
-            const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for (let i = 0; i < length; i++) {
-                state += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            return state;
-        }
-        const state = generateRandomString(16);
+    /*
+        This is the handling of logging your account into the spotify service so we can access your playlists and songs and what not.
+     */
+    authorizeSpotifyLogin(req, res) {
+        const state = StringUtilities_1.default.generateRandomString(16);
         res.cookie(stateKey, state);
         // your application requests authorization
         const scope = "user-read-private " +

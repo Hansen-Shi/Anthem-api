@@ -6,5 +6,6 @@ export interface IUserDocument extends Document {
     firstName: string;
     lastName: string;
     email: string;
+    playlists: [];
     comparePassword(candidate: string): Promise<boolean>;
 }

@@ -6,6 +6,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
 class UserController {
+    /*
+        Gets all users from the DB.
+     */
     getAllUsers(req, res) {
         console.log("redirected to /hello");
         user_1.default.find()
@@ -19,6 +22,9 @@ class UserController {
             res.json({ error: err });
         });
     }
+    /*
+        Gets all of a users information from their username
+     */
     getAUser(req, res) {
         user_1.default.findOne({ username: req.body.username })
             .exec()
@@ -31,6 +37,9 @@ class UserController {
             res.json(err);
         });
     }
+    /*
+      Adds a user to the database upon the creation of an account
+     */
     createUser(req, res) {
         const person = new user_1.default({
             username: req.body.username,
@@ -49,8 +58,12 @@ class UserController {
             res.json(err);
         });
     }
+    /*
+        handling login auth
+     */
     login(req, res) {
         const { username, password } = req.body;
+        const stayLoggedIn = req.body.stayLoggedIn;
         if (!username || !password) {
             res.status(400).json({
                 message: "put in your info nitwit"
@@ -69,7 +82,9 @@ class UserController {
                     });
                 }
                 else {
-                    res.redirect("/api/hello");
+                    res.json({
+                        message: 'success!'
+                    });
                 }
             });
         }

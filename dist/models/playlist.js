@@ -12,11 +12,20 @@ mongoose_1.connect(uri, (err) => {
     }
 });
 exports.playlistSchema = new mongoose_1.Schema({
+    userId: String,
     name: {
         type: String,
-        required: true
+        required: true,
+        default: "default"
     },
     songs: [],
-    image: String,
+    image: {
+        type: String,
+        default: null
+    },
+    description: String
 });
+const Playlist = mongoose_1.model("playlist", exports.playlistSchema);
+exports.default = Playlist;
+// name, desc, image, lists of songs.
 //# sourceMappingURL=playlist.js.map
