@@ -62,19 +62,34 @@ class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     deletePlaylist(req, res) {
-        const id = req.body.playlistId;
-        const userId = req.body.username;
-        user_1.default.find({ userId }, function (err, user) {
-            if (err) {
-                res.json(err);
-            }
-            if (user.length < 1) {
+        establishConnection().then((db) => {
+            user_1.default.findOne({ username: req.body.username }, function (err, user) {
+                if (err) {
+                    res.json(err);
+                    db.disconnect();
+                }
+                else {
+                    user_1.default.updateOne({ username: req.body.username }, { $pull: { id: [req.body.playlistId] } }, function (err) {
+                        if (err) {
+                            res.json(err);
+                            db.disconnect();
+                        }
+                        res.json('success');
+                        db.disconnect();
+                    });
+                }
+            });
+            playlist_1.default.findOneAndDelete({ _id: req.body.playlistId }, function (err) {
+                if (err) {
+                    res.json({
+                        message: 'failed to delete'
+                    });
+                }
                 res.json({
-                    message: 'fuck off'
+                    message: 'we did it'
                 });
-            }
-            else {
-            }
+                db.disconnect();
+            });
         });
     }
 }

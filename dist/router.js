@@ -18,6 +18,7 @@ class ApiRouter {
     getRouter() {
         this.router.get("/hello", this.userController.getAUser);
         this.router.post("/hello", this.userController.createUser);
+        this.router.delete("/playlists", this.playlistController.deletePlaylist);
         this.router.post("/testingLogin", this.userController.login);
         this.router.post("/createPlaylist", this.playlistController.createPlaylist);
         this.router.get("/login", this.spotifyController.authorizeSpotifyLogin);

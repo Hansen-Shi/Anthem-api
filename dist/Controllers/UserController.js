@@ -91,6 +91,7 @@ class UserController {
                 res.status(400).json({
                     message: "put in your info nitwit"
                 });
+                db.disconnect();
             }
             else {
                 user_1.default.findOne({ username: req.body.username }, function (err, user) {

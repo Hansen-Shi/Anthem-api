@@ -6,5 +6,4 @@ export interface IPlaylistDocument extends Document {
     image: string;
     description: string;
     songs: [];
-    comparePassword(candidate: string): Promise<boolean>;
 }
