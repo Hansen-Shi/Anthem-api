@@ -54,7 +54,6 @@ export class PlaylistController{
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void{
-        const id = req.body.playlistId;
         const userId = req.body.username;
         User.find({userId}, function(err, user) {
             if (err){
@@ -66,7 +65,7 @@ export class PlaylistController{
                 });
             }
             else {
-                user[0].
+                User.updateOne({username: userId}, {$pull: {id: [req.body.playlistId]}})
             }
         })
     }
