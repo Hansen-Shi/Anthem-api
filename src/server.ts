@@ -6,6 +6,12 @@ import * as querystring from "querystring";
 import cors from "cors";
 import * as request from "request";
 import cookieParser from "cookie-parser";
+import {disconnect, connect, Mongoose, Connection } from "mongoose";
+const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Anthem?retryWrites=true&w=majority";
+
+
+let mongoose = require('mongoose');
+
 
 class Application {
     public app: express.Application;
@@ -19,6 +25,7 @@ class Application {
         this.app.use(cors());
         this.app.use(bodyParser.json());
         this.initCors();
+        mongoose.connect(uri).then( (r:any) => {}).catch((r:any) => {});
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     public start(): void {

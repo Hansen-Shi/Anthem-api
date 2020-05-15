@@ -67,5 +67,6 @@ userSchema.pre<IUserDocument>("save", function(next) {
         });
     });
 });
-const User = model<IUserDocument>("plebeian", userSchema);
+const User = model<IUserDocument>("users", userSchema);
 export default User;
+module.exports = User;

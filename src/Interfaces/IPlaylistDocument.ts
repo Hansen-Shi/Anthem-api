@@ -1,7 +1,7 @@
 import {Document} from "mongoose";
 
 export interface IPlaylistDocument extends Document {
-    userID: string;
+    userId: string;
     name: string;
     image: string;
     description: string;

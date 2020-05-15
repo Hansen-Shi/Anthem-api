@@ -1,3 +1,4 @@
+/* tslint:disable */
 import { connect, model, Schema, Mongoose, disconnect } from "mongoose";
 import User from "../models/user";
 import { IPlaylistDocument } from "../Interfaces/IPlaylistDocument";
@@ -20,34 +21,29 @@ export const playlistSchema = new Schema({
 
 });
 
-function establishConnection(): Promise<Mongoose> {
-    return connect(uri, (err: any) => {
-        if (err) {
-            console.log("oh no");
-            console.log(err.toString());
-        } else {
-            console.log("we did it reddit");
-        }
-    });
-}
 
-playlistSchema.post<IPlaylistDocument>("save", function(next) {
-    establishConnection().then(
-        (db) => {
-            const playlistId = this._id.toString();
-            if (User.exists({ _id: this.userId })) {
-                console.log("we down here");
-                User.findByIdAndUpdate(this.userId, { $push: { playlists: playlistId } })
-                .then(
-                    () => {
-                        db.disconnect();
-                    }
-                );
-            }
-        }
-    );
+playlistSchema.post<IPlaylistDocument>("save", function (next) {
+    const playlistId = this._id.toString();
+    if (User.exists({ _id: this.userId })) {
+        console.log("we down here");
+        console.log(this.userId);
+        console.log(playlistId);
+
+        User.findOneAndUpdate(
+            {_id:this.userId},
+            { $addToSet: {playlists: playlistId}},
+            function(err,res) {
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log("this is the result of the motherfucking callback motherfucker.");
+                    console.log(res);
+                }
+            }).exec().then().catch();
+    }
 });
 
-const Playlist = model<IPlaylistDocument>("playlist", playlistSchema);
+const Playlist = model<IPlaylistDocument>("playlists", playlistSchema);
 export default Playlist;
+module.exports = Playlist;
 // name, desc, image, lists of songs.

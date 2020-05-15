@@ -9,6 +9,8 @@ const express_1 = __importDefault(require("express"));
 const router_1 = require("./router");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Anthem?retryWrites=true&w=majority";
+let mongoose = require('mongoose');
 class Application {
     constructor() {
         this.app = express_1.default();
@@ -18,6 +20,7 @@ class Application {
         this.app.use(cors_1.default());
         this.app.use(body_parser_1.default.json());
         this.initCors();
+        mongoose.connect(uri).then((r) => { }).catch((r) => { });
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     start() {

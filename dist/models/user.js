@@ -61,6 +61,7 @@ exports.userSchema.pre("save", function (next) {
         });
     });
 });
-const User = mongoose_1.model("plebeian", exports.userSchema);
+const User = mongoose_1.model("users", exports.userSchema);
 exports.default = User;
+module.exports = User;
 //# sourceMappingURL=user.js.map

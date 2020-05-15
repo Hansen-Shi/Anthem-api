@@ -16,22 +16,11 @@ const client_secret = "ba5a2acd5e174889a57ee849a81e92d8"; // Your secret
 const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
 const stateKey = "spotify_auth_state";
 
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Playlist?retryWrites=true&w=majority";
-
 /*
     This is the controller for creating, updating, and deleting playlists. It must have a logged in user in the response body.
 
  */
-function establishConnection(): Promise<Mongoose> {
-    return connect(uri, (err: any) => {
-        if (err) {
-            console.log("oh no");
-            console.log(err.toString());
-        } else {
-            console.log("we did it reddit");
-        }
-    });
-}
+
 export class PlaylistController {
 
     /*
@@ -39,31 +28,26 @@ export class PlaylistController {
      */
 
     public createPlaylist(req: express.Request, res: express.Response): void {
-        establishConnection().then(
-            (db) => {
-                const playlist = new Playlist({
-                    userId: req.body.userId,
-                    name: req.body.name,
-                    description: req.body.description,
-                    image: req.body.image
-                });
-                playlist.save()
-                    .then((result) => {
-                        console.log(result);
-                        res.json(result);
-                        db.disconnect();
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        res.json(err);
-                    });
+        const playlist = new Playlist({
+            userId: req.body.userId,
+            name: req.body.name,
+            description: req.body.description,
+            image: req.body.image
+        });
+        playlist.save()
+            .then((result) => {
+                console.log(result);
+                res.json(result);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.json(err);
+            });
 
-            }
-        );
 
     }
     /*
-        Accepts a logged in user, a playlist id, and 1 or more songs.
+
      */
     public updatePlaylist(req: express.Request, res: express.Response): void {
 
@@ -72,37 +56,30 @@ export class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void {
-        establishConnection().then(
-            (db) => {
-                User.findOne({ username: req.body.username }, function (err, user) {
+
+        User.findOne({username: req.body.username}, function (err, user) {
+            if (err) {
+                res.json(err);
+            } else {
+                User.updateOne({username: req.body.username}, {$pull: {id: [req.body.playlistId]}}, function (err) {
                     if (err) {
                         res.json(err);
-                        db.disconnect();
                     }
-                    else {
-                        User.updateOne({ username: req.body.username }, { $pull: { id: [req.body.playlistId] } }, function (err) {
-                            if (err) {
-                                res.json(err);
-                                db.disconnect();
-                            }
-                            res.json('success');
-                            db.disconnect();
-                        })
-                    }
+                    res.json('success');
                 })
-                Playlist.findOneAndDelete({_id: req.body.playlistId}, function(err){
-                    if (err){
-                        res.json({
-                            message: 'failed to delete'
-                        });
-                    }
-                    res.json({
-                        message: 'we did it'
-                    });
-                    db.disconnect();
+            }
+        });
+        Playlist.findOneAndDelete({_id: req.body.playlistId}, function (err) {
+            if (err) {
+                res.json({
+                    message: 'failed to delete'
                 });
             }
-        );
+            res.json({
+                message: 'we did it'
+            });
+        });
+
 
     }
 
