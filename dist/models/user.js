@@ -6,21 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const validator_1 = __importDefault(require("validator"));
-const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
 const saltLevel = 10;
 const requiredString = {
     type: String,
     required: true
 };
-mongoose_1.connect(uri, (err) => {
-    if (err) {
-        console.log("oh no");
-        console.log(err.toString());
-    }
-    else {
-        console.log("we did it reddit");
-    }
-});
 exports.userSchema = new mongoose_1.Schema({
     username: {
         type: String,

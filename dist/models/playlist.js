@@ -1,16 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Playlist?retryWrites=true&w=majority";
-mongoose_1.connect(uri, (err) => {
-    if (err) {
-        console.log("oh no");
-        console.log(err.toString());
-    }
-    else {
-        console.log("we did it reddit");
-    }
-});
+const user_1 = __importDefault(require("../models/user"));
 exports.playlistSchema = new mongoose_1.Schema({
     userId: String,
     name: {
@@ -24,6 +18,12 @@ exports.playlistSchema = new mongoose_1.Schema({
         default: null
     },
     description: String
+});
+exports.playlistSchema.post("save", function (next) {
+    const playlistId = this._id.toString();
+    if (user_1.default.exists({ _id: this.userId })) {
+        user_1.default.findByIdAndUpdate(this.userId, { $addToSet: { playlists: playlistId } });
+    }
 });
 const Playlist = mongoose_1.model("playlist", exports.playlistSchema);
 exports.default = Playlist;
