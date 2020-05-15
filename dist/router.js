@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const UserController_1 = require("./Controller/UserController");
-const SpotifyController_1 = require("./Controller/SpotifyController");
+const UserController_1 = require("./Controllers/UserController");
+const SpotifyController_1 = require("./Controllers/SpotifyController");
 class ApiRouter {
     constructor() {
         this.router = express_1.default.Router();
@@ -16,6 +16,7 @@ class ApiRouter {
     getRouter() {
         this.router.get("/hello", this.userController.getAllUsers);
         this.router.post("/hello", this.userController.createUser);
+        this.router.post("/testingLogin", this.userController.login);
         this.router.get("/login", this.spotifyController.createToken);
         this.router.get("/playlists", this.spotifyController.getAllPlaylistsFromUser);
         this.router.get("/callback", this.spotifyController.callback);
