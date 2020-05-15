@@ -54,7 +54,21 @@ export class PlaylistController{
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void{
-
+        const id = req.body.playlistId;
+        const userId = req.body.username;
+        User.find({userId}, function(err, user) {
+            if (err){
+                res.json(err);
+            }
+            if (user.length < 1){
+                res.json({
+                    message: 'fuck off'
+                });
+            }
+            else {
+                user[0].
+            }
+        })
     }
 
 

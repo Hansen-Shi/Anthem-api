@@ -12,17 +12,9 @@ connect (uri, (err: any) => {
 });
 
 export const songSchema = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    length: {
-        type: Number
-    },
-    artist: String,
-    image: String,
-    type: String,
-    index: String
+    type: String, //service source
+    playlistIndex: Number, 
+    songURI: String //songId link
 });
 
 const Song = model("song", songSchema);

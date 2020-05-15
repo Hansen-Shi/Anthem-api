@@ -1,4 +1,4 @@
-import {connect, model, Schema} from "mongoose";
+import {connect, model, Schema, disconnect} from "mongoose";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import { IUserDocument } from "../Interfaces/IUserDocument";
@@ -78,5 +78,8 @@ userSchema.pre<IUserDocument>("save", function(next) {
     });
 });
 
+userSchema.post("save", function(next) {
+    disconnect();
+})
 const User = model<IUserDocument>("plebeian", userSchema);
 export default User;
