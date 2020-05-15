@@ -1,20 +1,9 @@
 import {connect, model, Schema} from "mongoose";
 
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Song?retryWrites=true&w=majority";
-
-connect (uri, (err: any) => {
-    if (err) {
-        console.log("oh no");
-        console.log(err.toString());
-    } else {
-        console.log("we did it reddit");
-    }
-});
-
 export const songSchema = new Schema({
-    type: String, //service source
-    playlistIndex: Number, 
-    songURI: String //songId link
+    type: String, // service source
+    playlistIndex: Number,
+    songURI: String // songId link
 });
 
 const Song = model("song", songSchema);

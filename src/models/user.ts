@@ -3,21 +3,11 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import { IUserDocument } from "../Interfaces/IUserDocument";
 
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
 const saltLevel: number = 10;
 const requiredString = {
     type: String,
     required: true
 };
-
-connect (uri, (err: any) => {
-    if (err) {
-        console.log("oh no");
-        console.log(err.toString());
-    } else {
-        console.log("we did it reddit");
-    }
-});
 
 export const userSchema = new Schema({
     username: {
@@ -77,9 +67,5 @@ userSchema.pre<IUserDocument>("save", function(next) {
         });
     });
 });
-
-userSchema.post("save", function(next) {
-    disconnect();
-})
 const User = model<IUserDocument>("plebeian", userSchema);
 export default User;
