@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const playlist_1 = __importDefault(require("../models/playlist"));
-const user_1 = __importDefault(require("../models/user"));
 //delete later
 const myRefreshToken = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0';
 const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
@@ -46,19 +45,6 @@ class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     deletePlaylist(req, res) {
-        user_1.default.findOne({ username: req.body.username }, function (err, user) {
-            if (err) {
-                res.json(err);
-            }
-            else {
-                user_1.default.updateOne({ username: req.body.username }, { $pull: { id: [req.body.playlistId] } }, function (err) {
-                    if (err) {
-                        res.json(err);
-                    }
-                    res.json('success');
-                });
-            }
-        });
         playlist_1.default.findOneAndDelete({ _id: req.body.playlistId }, function (err) {
             if (err) {
                 res.json({

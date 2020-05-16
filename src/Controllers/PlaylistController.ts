@@ -43,45 +43,27 @@ export class PlaylistController {
                 console.log(err);
                 res.json(err);
             });
-
-
     }
     /*
 
      */
     public updatePlaylist(req: express.Request, res: express.Response): void {
-
+        
     }
     /*
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void {
-
-        User.findOne({username: req.body.username}, function (err, user) {
-            if (err) {
-                res.json(err);
-            } else {
-                User.updateOne({username: req.body.username}, {$pull: {id: [req.body.playlistId]}}, function (err) {
-                    if (err) {
-                        res.json(err);
-                    }
-                    res.json('success');
-                })
-            }
-        });
-        Playlist.findOneAndDelete({_id: req.body.playlistId}, function (err) {
+        
+        Playlist.findOneAndDelete({_id: req.body.playlistId }, function (err) {
             if (err) {
                 res.json({
                     message: 'failed to delete'
                 });
             }
             res.json({
-                message: 'we did it'
+                message: 'playlist removed'
             });
         });
-
-
     }
-
-
 }
