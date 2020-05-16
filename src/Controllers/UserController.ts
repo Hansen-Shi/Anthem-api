@@ -2,7 +2,6 @@
 
 import express from "express";
 import User from "../models/user";
-import {connect, Mongoose} from "mongoose";
 
 const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
 
