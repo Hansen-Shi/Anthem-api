@@ -3,9 +3,6 @@
 import express from "express";
 import User from "../models/user";
 
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
-
-
 export class UserController {
 
     /*
