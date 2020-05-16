@@ -2,6 +2,8 @@
 
 import express from "express";
 import User from "../models/user";
+import {connect, Mongoose} from "mongoose";
+import StringUtilities from "../Utility/StringUtilities";
 
 export class UserController {
 
@@ -66,6 +68,12 @@ export class UserController {
 
     }
 
+
+    public checkRememberMe(req: express.Request, res:express.Response): void{
+
+
+
+    }
     /*
         handling login auth
      */
@@ -95,14 +103,17 @@ export class UserController {
                     });
 
                 } else {
-
+                    if(stayLoggedIn){
+                        let stayToken = StringUtilities.generateRandomString(128);
+                        //send token to DB for user
+                        let stayCookie = req.body.username + ":" + stayToken;
+                        res.cookie("rememberme", stayCookie);
+                    }
                     res.json({
                         message: 'success!'
                     });
                 }
             })
         }
-
-
     }
 }
