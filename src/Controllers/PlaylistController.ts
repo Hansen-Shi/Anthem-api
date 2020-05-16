@@ -26,7 +26,6 @@ export class PlaylistController {
     /*
         Accepts in a logged in user (verified by token of some sort or some shit), a playlist name, description, and optionally, an image upload.
      */
-
     public createPlaylist(req: express.Request, res: express.Response): void {
         const playlist = new Playlist({
             userId: req.body.userId,
@@ -54,16 +53,40 @@ export class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void {
-        
-        Playlist.findOneAndDelete({_id: req.body.playlistId }, function (err) {
+
+        Playlist.findOneAndDelete({_id: req.body.playlistId }, function (err, resp) {
+            console.log(resp);
             if (err) {
                 res.json({
                     message: 'failed to delete'
                 });
             }
-            res.json({
-                message: 'playlist removed'
-            });
+            if(resp != null) {
+                //remove the playlist from the user:
+                User.findOne({_id:req.body.userId}, function(err, user){
+                   if(err){
+                       res.json(err);
+                   }else{
+                       if(user != null){
+                           user.updateOne({ $pull: {playlists: req.body.playlistId}},{},function(err, resu){
+                               if(err){
+                                   res.json(err);
+                               }else{
+                                   console.log("no error?");
+                               }
+                           });
+                       }
+                   }
+                });
+                res.json({
+                    message: 'playlist removed'
+                } + resp.toJSON());
+            }else{
+                res.json(resp)
+            }
         });
+    }
+    public removePlaylistFromUser(userId: String, playlistId: String):void{
+
     }
 }

@@ -5,7 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = __importDefault(require("../models/user"));
+const StringUtilities_1 = __importDefault(require("../Utility/StringUtilities"));
 const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
+/*
+    Our session token works as follows: It is a cookie
+ */
 class UserController {
     /*
         Gets all users from the DB.
@@ -59,6 +63,8 @@ class UserController {
             res.json(err);
         });
     }
+    checkRememberMe(req, res) {
+    }
     /*
         handling login auth
      */
@@ -83,6 +89,12 @@ class UserController {
                     });
                 }
                 else {
+                    if (stayLoggedIn) {
+                        let stayToken = StringUtilities_1.default.generateRandomString(128);
+                        //send token to DB for user
+                        let stayCookie = req.body.username + ":" + stayToken;
+                        res.cookie("rememberme", stayCookie);
+                    }
                     res.json({
                         message: 'success!'
                     });

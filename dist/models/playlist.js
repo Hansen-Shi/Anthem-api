@@ -21,6 +21,30 @@ exports.playlistSchema = new mongoose_1.Schema({
     },
     description: String
 });
+/*
+playlistSchema.pre<IPlaylistDocument>("deleteOne", function(next) {
+    console.log("before the playlist gets deleted, we attempt to remove it from the users playlists list.");
+    const playlistId = this._id.toString();
+    const userId = this.userId.toString();
+    console.log("pid and uid: " + this._id + " : " + this.userId + this.name);
+
+    User.findOneAndUpdate(
+        {_id:userId},
+        { $removeFromSet: {playlists: playlistId}},
+        function(err,res) {
+            if(err){
+                console.log(err);
+            }else{
+                if(res != null){
+                    console.log("");
+                    console.log(res);
+                }else{
+                    //shit got fucked up we gotta add shit here fam that deletes the playlist beacause it failed to get added to the user fam
+                }
+            }
+        }).exec().then().catch();
+
+});*/
 exports.playlistSchema.post("save", function (next) {
     const playlistId = this._id.toString();
     if (user_1.default.exists({ _id: this.userId })) {
@@ -32,8 +56,13 @@ exports.playlistSchema.post("save", function (next) {
                 console.log(err);
             }
             else {
-                console.log("this is the result of the motherfucking callback motherfucker.");
-                console.log(res);
+                if (res != null) {
+                    console.log("This user has a new playlist!");
+                    console.log(res);
+                }
+                else {
+                    //shit got fucked up we gotta add shit here fam that deletes the playlist beacause it failed to get added to the user fam
+                }
             }
         }).exec().then().catch();
     }

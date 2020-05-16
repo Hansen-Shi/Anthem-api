@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const playlist_1 = __importDefault(require("../models/playlist"));
+const user_1 = __importDefault(require("../models/user"));
 //delete later
 const myRefreshToken = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0';
 const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
@@ -45,16 +46,58 @@ class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     deletePlaylist(req, res) {
-        playlist_1.default.findOneAndDelete({ _id: req.body.playlistId }, function (err) {
+        playlist_1.default.findOneAndDelete({ _id: req.body.playlistId }, function (err, resp) {
+            console.log(resp);
             if (err) {
                 res.json({
                     message: 'failed to delete'
                 });
             }
-            res.json({
-                message: 'we did it'
-            });
+            if (resp != null) {
+                //remove the playlist from the user:
+                user_1.default.findOne({ _id: req.body.userId }, function (err, user) {
+                    if (err) {
+                        res.json(err);
+                    }
+                    else {
+                        if (user != null) {
+                            user.updateOne({ $pull: { playlists: req.body.playlistId } }, {}, function (err, resu) {
+                                if (err) {
+                                    res.json(err);
+                                }
+                                else {
+                                    console.log("no error?");
+                                }
+                            });
+                        }
+                    }
+                });
+                /*
+                User.findOneAndUpdate(
+                    {_id:req.body.userId},
+                    { $pull: {playlists: req.body.playlistId}},
+                    function(err,res) {
+                        if(err){
+                            console.log(err);
+                        }else{
+                            if(res != null){
+                                console.log("");
+                                console.log(res);
+                            }else{
+                                //shit got fucked up we gotta add shit here fam that deletes the playlist beacause it failed to get added to the user fam
+                            }
+                        }
+                    }).exec().then().catch();*/
+                res.json({
+                    message: 'playlist removed'
+                } + resp.toJSON());
+            }
+            else {
+                res.json(resp);
+            }
         });
+    }
+    removePlaylistFromUser(userId, playlistId) {
     }
 }
 exports.PlaylistController = PlaylistController;
