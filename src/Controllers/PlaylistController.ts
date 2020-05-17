@@ -83,7 +83,4 @@ export class PlaylistController {
             }
         });
     }
-    public removePlaylistFromUser(userId: String, playlistId: String):void{
-
-    }
 }

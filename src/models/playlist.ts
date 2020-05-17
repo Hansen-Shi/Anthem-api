@@ -19,31 +19,6 @@ export const playlistSchema = new Schema({
 
 });
 
-/*
-playlistSchema.pre<IPlaylistDocument>("deleteOne", function(next) {
-    console.log("before the playlist gets deleted, we attempt to remove it from the users playlists list.");
-    const playlistId = this._id.toString();
-    const userId = this.userId.toString();
-    console.log("pid and uid: " + this._id + " : " + this.userId + this.name);
-
-    User.findOneAndUpdate(
-        {_id:userId},
-        { $removeFromSet: {playlists: playlistId}},
-        function(err,res) {
-            if(err){
-                console.log(err);
-            }else{
-                if(res != null){
-                    console.log("");
-                    console.log(res);
-                }else{
-                    //shit got fucked up we gotta add shit here fam that deletes the playlist beacause it failed to get added to the user fam
-                }
-            }
-        }).exec().then().catch();
-
-});*/
-
 playlistSchema.post<IPlaylistDocument>("save", function (next) {
     const playlistId = this._id.toString();
     if (User.exists({ _id: this.userId })) {
