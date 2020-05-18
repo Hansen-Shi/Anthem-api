@@ -22,11 +22,6 @@ import login from "request";
 import {userInfo} from "os";
 
 
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
-/*
-    Our session token works as follows: It is a cookie
- */
-
 export class UserController {
 
     /*

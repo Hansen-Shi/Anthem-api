@@ -1,9 +1,17 @@
 import {connect, model, Schema} from "mongoose";
 
+const requiredString = {
+    type: String,
+    required: true
+};
 export const songSchema = new Schema({
-    type: String, // service source
-    playlistIndex: Number,
-    songURI: String // songId link
+    playlistId: requiredString,
+    type: requiredString, // service source
+    playlistIndex: {
+        type: Number,
+        required: true
+    },
+    songURI: requiredString // songId link
 });
 
 const Song = model("song", songSchema);

@@ -3,8 +3,6 @@ import { connect, model, Schema, Mongoose, disconnect } from "mongoose";
 import User from "../models/user";
 import { IPlaylistDocument } from "../Interfaces/IPlaylistDocument";
 
-const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/User?retryWrites=true&w=majority";
-
 export const playlistSchema = new Schema({
     userId: String,
     name: {
