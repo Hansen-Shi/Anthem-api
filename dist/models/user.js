@@ -13,14 +13,12 @@ const requiredString = {
 };
 exports.userSchema = new mongoose_1.Schema({
     username: {
-        type: String,
-        required: true,
-        unique: true
+        type: String
     },
     password: requiredString,
     image: String,
-    firstName: requiredString,
-    lastName: requiredString,
+    firstName: String,
+    lastName: String,
     email: {
         type: String,
         required: true,

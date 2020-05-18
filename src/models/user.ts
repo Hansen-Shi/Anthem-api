@@ -11,14 +11,12 @@ const requiredString = {
 
 export const userSchema = new Schema({
     username: {
-        type: String,
-        required: true,
-        unique: true
+        type: String
     },
     password: requiredString,
     image: String,
-    firstName: requiredString,
-    lastName: requiredString,
+    firstName: String,
+    lastName: String,
     email: {
         type: String,
         required: true,

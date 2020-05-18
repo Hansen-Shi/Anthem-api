@@ -2,8 +2,25 @@
 
 import express from "express";
 import User from "../models/user";
+import { IUserDocument } from "../Interfaces/IUserDocument";
+
 import {connect, Mongoose} from "mongoose";
+import request from "request";
+
+// tslint:disable-next-line:no-var-requires
+const passport = require("passport");
+import * as JWTPass from "passport-jwt";
+
+const jwt = require("jsonwebtoken");
+
+const JWTStrategy = JWTPass.Strategy;
+const ExtractJWT = JWTPass.ExtractJwt;
 import StringUtilities from "../Utility/StringUtilities";
+import Config from "../config";
+import moment = require("moment");
+import login from "request";
+import {userInfo} from "os";
+
 
 const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
 /*
@@ -22,7 +39,7 @@ export class UserController {
             .exec()
             .then((doc) => {
                 console.log(doc);
-                res.json(doc);
+                res.status(200).json("{body:{ " + doc + "}}");
             })
             .catch((err) => {
                 console.log(err);
@@ -36,54 +53,113 @@ export class UserController {
      */
     public getAUser(req: express.Request, res: express.Response): void {
 
-        User.findOne({username: req.body.username})
+        User.findOne({email: req.body.email})
             .exec()
             .then((doc) => {
-                console.log(doc._id.toString());
-                res.json(doc);
+                res.status(200).send(doc);
             })
             .catch((err) => {
                 console.log(err);
-                res.json(err);
+                res.status(401).json(err);
             });
-
-
     }
 
     /*
       Adds a user to the database upon the creation of an account
      */
     public createUser(req: express.Request, res: express.Response): void {
+        console.log(req.body.email);
+        console.log(req.body.password);
         const person = new User({
-            username: req.body.username,
-            password: req.body.password,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email
+            email: req.body.email,
+            password: req.body.password
         });
         person.save()
             .then((result) => {
-                console.log(result);
-                res.json(result);
+                res.status(200).json(result);
             })
             .catch((err) => {
                 console.log(err);
-                res.json(err);
+                res.status(401).json(err);
             });
-
     }
-
 
     public checkRememberMe(req: express.Request, res:express.Response): void{
 
+        if(!req.headers.authorization){
+            res.status(401).send({error: 'TokenMissing'});
+        }
+
+        const token = req.headers.authorization.split(' ')[1];
 
 
+        let payload:any = null;
+
+        try {
+            payload = jwt.decode(token, Config.TOKEN_SECRET);
+        } catch(err){
+            res.status(401).send({error: "TokenInvalid"});
+        }
+
+        if(payload.exp <= moment().unix()){
+            res.status(401).send({error: 'TokenExpired'});
+        }
+
+        User.findById(payload.sub, function(err, user){
+            if(!user){
+                res.status(401).send({error: 'PersonNotFound'});
+            }else{
+                req.body.user = payload.sub;
+            }
+        });
+
+
+
+
+        const storedState = req.cookies ? req.cookies["remember-me"] : null;
+
+        if(storedState != null) {
+            const list = storedState.split(":");
+            //if we find the pair of username:storedState in the DB, then you are logged in. Otherwise you are not.
+        }
+
+    }
+    public signup(req: express.Request, res: express.Response): void{
+        //res.json({message : "signup successful", user: req.body.user});
     }
     /*
         handling login auth
      */
     public login(req: express.Request, res: express.Response): void {
 
+        passport.authenticate("login", async (err: any, user: any, info: any) => {
+            try {
+                if (err || !user){
+                    res.status(401).json("An Error Occurred");
+                } else {
+                    // @ts-ignore
+                    req.login(user, {session: false},async(error) => {
+                        if ( error) {
+                            res.status(401).json("An Error Occurred");
+                        }
+                        const body = {_id : user._id, email : user.email};
+
+                        const token = jwt.sign({user: body}, "top_secret");
+
+                        return res.json({token});
+                    });
+                }
+            } catch (error) {
+                return res.json(error);
+            }
+        })(req, res);
+
+
+
+
+
+
+        /*
         const {
             username,
             password
@@ -112,7 +188,7 @@ export class UserController {
                         let stayToken = StringUtilities.generateRandomString(128);
                         //send token to DB for user
                         let stayCookie = req.body.username + ":" + stayToken;
-                        res.cookie("rememberme", stayCookie);
+                        res.cookie("remember-me", stayCookie);
                     }
                     res.json({
                         message: 'success!'
@@ -120,5 +196,6 @@ export class UserController {
                 }
             })
         }
+        */
     }
 }

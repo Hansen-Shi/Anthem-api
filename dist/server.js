@@ -11,11 +11,13 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Anthem?retryWrites=true&w=majority";
 let mongoose = require('mongoose');
+const passport = require("passport");
+require("./auth/Authentication");
 class Application {
     constructor() {
         this.app = express_1.default();
         this.port = +process.env.serverPort || 3000;
-        this.app.use(body_parser_1.default.urlencoded({ extended: false }));
+        this.app.use(body_parser_1.default.urlencoded({ extended: true }));
         this.app.use(cookie_parser_1.default());
         this.app.use(cors_1.default());
         this.app.use(body_parser_1.default.json());

@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const passport = require("passport");
 const playlist_1 = __importDefault(require("../models/playlist"));
 const user_1 = __importDefault(require("../models/user"));
 //delete later
@@ -50,7 +51,7 @@ class PlaylistController {
             console.log(resp);
             if (err) {
                 res.json({
-                    message: 'failed to delete'
+                    message: "failed to delete"
                 });
             }
             if (resp != null) {
@@ -72,22 +73,6 @@ class PlaylistController {
                         }
                     }
                 });
-                /*
-                User.findOneAndUpdate(
-                    {_id:req.body.userId},
-                    { $pull: {playlists: req.body.playlistId}},
-                    function(err,res) {
-                        if(err){
-                            console.log(err);
-                        }else{
-                            if(res != null){
-                                console.log("");
-                                console.log(res);
-                            }else{
-                                //shit got fucked up we gotta add shit here fam that deletes the playlist beacause it failed to get added to the user fam
-                            }
-                        }
-                    }).exec().then().catch();*/
                 res.json({
                     message: 'playlist removed'
                 } + resp.toJSON());
@@ -96,8 +81,6 @@ class PlaylistController {
                 res.json(resp);
             }
         });
-    }
-    removePlaylistFromUser(userId, playlistId) {
     }
 }
 exports.PlaylistController = PlaylistController;

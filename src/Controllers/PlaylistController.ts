@@ -3,6 +3,7 @@
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
 import express from "express";
+const passport = require("passport");
 import * as querystring from "querystring";
 import * as request from "request";
 import Playlist from "../models/playlist";
@@ -53,12 +54,11 @@ export class PlaylistController {
         Accepts a logged in user, a playlist id, and an extra verification from the user
      */
     public deletePlaylist(req: express.Request, res: express.Response): void {
-
         Playlist.findOneAndDelete({_id: req.body.playlistId }, function (err, resp) {
             console.log(resp);
             if (err) {
                 res.json({
-                    message: 'failed to delete'
+                    message: "failed to delete"
                 });
             }
             if(resp != null) {
@@ -85,8 +85,5 @@ export class PlaylistController {
                 res.json(resp)
             }
         });
-    }
-    public removePlaylistFromUser(userId: String, playlistId: String):void{
-
     }
 }

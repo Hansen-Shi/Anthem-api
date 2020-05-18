@@ -11,7 +11,9 @@ const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Ant
 
 
 let mongoose = require('mongoose');
+const passport = require("passport");
 
+require("./auth/Authentication");
 
 class Application {
     public app: express.Application;
@@ -20,7 +22,7 @@ class Application {
     constructor() {
         this.app = express();
         this.port = +process.env.serverPort || 3000;
-        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
         this.app.use(bodyParser.json());

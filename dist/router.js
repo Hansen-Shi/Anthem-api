@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const UserController_1 = require("./Controllers/UserController");
 const SpotifyController_1 = require("./Controllers/SpotifyController");
 const PlaylistController_1 = require("./Controllers/PlaylistController");
+// tslint:disable-next-line:no-var-requires
+const passport = require("passport");
 class ApiRouter {
     constructor() {
         this.router = express_1.default.Router();
@@ -16,8 +18,9 @@ class ApiRouter {
     }
     // Creates the routes for this router and returns a populated router object
     getRouter() {
-        this.router.get("/hello", this.userController.getAUser);
-        this.router.post("/hello", this.userController.createUser);
+        this.router.get("/user", this.userController.getAUser);
+        this.router.post("/user", this.userController.createUser);
+        this.router.post("/signup", passport.authenticate("signup", { session: false }), this.userController.signup);
         this.router.delete("/playlists", this.playlistController.deletePlaylist);
         this.router.post("/testingLogin", this.userController.login);
         this.router.post("/createPlaylist", this.playlistController.createPlaylist);
