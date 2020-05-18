@@ -54,7 +54,7 @@ export class UserController {
                 res.status(200).send(doc);
             })
             .catch((err) => {
-                console.log(err);
+                console.log("WHAT THE FUCK IS GOING ONNNNNNNNNNNNNNNNNNN");
                 res.status(401).json(err);
             });
     }
@@ -67,18 +67,26 @@ export class UserController {
         console.log(req.body.password);
         const person = new User({
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
         });
+        if(req.body.rememberme){
+            person.wantsRemember = true;
+        }
         person.save()
             .then((result) => {
-                res.status(200).json(result);
+                console.log("When we create a user we really are sending a 200 requset........");
+                console.log(result);
+                return res.status(200).send(result);
             })
             .catch((err) => {
+                console.log("shit fuck shit ");
                 console.log(err);
                 res.status(401).json(err);
             });
+        console.log(":(")
     }
 
+    /*
     public checkRememberMe(req: express.Request, res:express.Response): void{
 
         if(!req.headers.authorization){
@@ -118,14 +126,25 @@ export class UserController {
             //if we find the pair of username:storedState in the DB, then you are logged in. Otherwise you are not.
         }
 
-    }
+    }*/
+
+
+
+
+
     public signup(req: express.Request, res: express.Response): void{
+        console.log("we even make it here ?");
         //res.json({message : "signup successful", user: req.body.user});
     }
+
     /*
         handling login auth
      */
     public login(req: express.Request, res: express.Response): void {
+
+        console.log("HOORAH");
+
+        const rememberMeBool = req.body.rememberme;
 
         passport.authenticate("login", async (err: any, user: any, info: any) => {
             try {
@@ -137,9 +156,50 @@ export class UserController {
                         if ( error) {
                             res.status(401).json("An Error Occurred");
                         }
+
+                        let payload:any = req.user;
+
+
+
+                        const rememberToken: string = jwt.sign(payload,"top_secret2");
+
+                        /*
+                        req.user.update({rememberMeToken: rememberToken}).then(
+                            (err:any) => {
+                                if(err)
+                                    console.log(err);
+
+                                console.log("it should've worked." + "::" + rememberToken);
+                            }
+                        );*/
+
+
+                        // @ts-ignore
+                        User.findOne({_id:req.user._id}, (err:any, res:any) => {
+                           if(err){
+                               console.log("err finding user");
+                           }else{
+                               res.update({rememberMeToken: rememberToken});
+                               console.log(rememberToken);
+                           }
+                        });
+
+
+
+                        if(rememberMeBool){
+                            res.cookie(Config.TOKEN_SECRET,rememberToken);
+                        }
+
                         const body = {_id : user._id, email : user.email};
 
                         const token = jwt.sign({user: body}, "top_secret");
+
+
+                        /*
+                            Handling of the remember me part of this shit
+                         */
+
+
 
                         return res.json({token});
                     });

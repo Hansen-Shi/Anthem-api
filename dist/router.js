@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,6 +18,7 @@ const SpotifyController_1 = require("./Controllers/SpotifyController");
 const PlaylistController_1 = require("./Controllers/PlaylistController");
 // tslint:disable-next-line:no-var-requires
 const passport = require("passport");
+// TODO: make create user stop an unauthorized response.
 class ApiRouter {
     constructor() {
         this.router = express_1.default.Router();
@@ -18,16 +28,14 @@ class ApiRouter {
     }
     // Creates the routes for this router and returns a populated router object
     getRouter() {
-        this.router.get("/user", this.userController.getAUser);
-        this.router.post("/user", this.userController.createUser);
-        this.router.post("/signup", passport.authenticate("signup", { session: false }), this.userController.signup);
-        this.router.delete("/playlists", this.playlistController.deletePlaylist);
-        this.router.post("/testingLogin", this.userController.login);
-        this.router.post("/createPlaylist", this.playlistController.createPlaylist);
-        this.router.get("/login", this.spotifyController.authorizeSpotifyLogin);
-        this.router.get("/playlists", this.spotifyController.getAllPlaylistsFromUser);
-        this.router.get("/callback", this.spotifyController.callback);
-        this.router.get("/spotify_access_token", this.spotifyController.getAccessTokenFromRefreshToken);
+        this.router.get("/user-data", this.userController.getAUser);
+        this.router.post("/user-data", this.userController.createUser);
+        // tslint:disable-next-line
+        this.router.post("/signup", passport.authenticate("signup", { session: false }), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            return next(req.user);
+        }));
+        this.router.post("/login", this.userController.login);
+        this.router.get("/home", this.playlistController.home);
         return this.router;
     }
 }

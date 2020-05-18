@@ -7,8 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const passport = require("passport");
 const playlist_1 = __importDefault(require("../models/playlist"));
 const user_1 = __importDefault(require("../models/user"));
-//delete later
-const myRefreshToken = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0';
 const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
 const client_secret = "ba5a2acd5e174889a57ee849a81e92d8"; // Your secret
 const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
@@ -81,6 +79,9 @@ class PlaylistController {
                 res.json(resp);
             }
         });
+    }
+    home(req, res) {
+        res.send({ message: "wowsers" });
     }
 }
 exports.PlaylistController = PlaylistController;

@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const body_parser_1 = __importDefault(require("body-parser"));
 const express_1 = __importDefault(require("express"));
 const router_1 = require("./router");
+const secureroutes_1 = require("./secureroutes");
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Anthem?retryWrites=true&w=majority";
@@ -19,10 +20,13 @@ class Application {
         this.port = +process.env.serverPort || 3000;
         this.app.use(body_parser_1.default.urlencoded({ extended: true }));
         this.app.use(cookie_parser_1.default());
+        //this.app.use(passport.initialize())
         this.app.use(cors_1.default());
         this.app.use(body_parser_1.default.json());
         this.initCors();
         mongoose.connect(uri).then((r) => { }).catch((r) => { });
+        mongoose.connection.on("error", (error) => console.log(error));
+        mongoose.Promise = global.Promise;
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     start() {
@@ -39,12 +43,13 @@ class Application {
             res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
             res.header("Access-Control-Allow-Credentials", "true");
-            next();
+            return next();
         });
     }
     // setup routes for the express server
     buildRoutes() {
         this.app.use("/api", new router_1.ApiRouter().getRouter());
+        this.app.use("/user", passport.authenticate("jwt", { session: false }), new secureroutes_1.SecureApiRouter().getRouter());
     }
 }
 new Application().start();

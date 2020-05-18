@@ -1,7 +1,15 @@
-import {connect, model, Schema, disconnect} from "mongoose";
+/* tslint:disable */
+import {connect, model, Schema, disconnect, Query} from "mongoose";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import { IUserDocument } from "../Interfaces/IUserDocument";
+const passport = require("passport");
+import * as JWTPass from "passport-jwt";
+
+const jwt = require("jsonwebtoken");
+
+const JWTStrategy = JWTPass.Strategy;
+const ExtractJWT = JWTPass.ExtractJwt;
 
 const saltLevel: number = 10;
 const requiredString = {
@@ -23,6 +31,7 @@ export const userSchema = new Schema({
         validate: [ validator.isEmail, "invalid email" ],
         unique: true
     },
+    rememberMeTokens: [],
     spotifyRefreshToken: String,
     playlists: []
 
@@ -57,11 +66,30 @@ userSchema.pre<IUserDocument>("save", function(next) {
 
         bcrypt.hash(user.password, salt, function(err, hash) {
             if (err) {
+                console.log("Fuck right off cunt");
                 return next(err);
             }
 
+
+            //Add remember me token to the DB for the user if they specified.
+            if(user.wantsRemember || true) {
+
+                const rememberToken = jwt.sign(user.toJSON(), "top_secret2");
+
+                console.log(rememberToken);
+                user.updateOne({$addToSet: {"rememberMeTokens": rememberToken}}, (err: any, user:any) => {
+                    if (err) {
+                        console.log("BRO.");
+                        return next(err);
+                    }
+                    console.log(err + ":eror????");
+                    console.log(user);
+                    console.log("remember token added to user");
+                }).exec().then(r => next(r));
+            }
+
             user.password = hash;
-            next();
+            return next();
         });
     });
 });

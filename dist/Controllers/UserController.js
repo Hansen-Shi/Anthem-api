@@ -28,11 +28,6 @@ const jwt = require("jsonwebtoken");
 const JWTStrategy = JWTPass.Strategy;
 const ExtractJWT = JWTPass.ExtractJwt;
 const config_1 = __importDefault(require("../config"));
-const moment = require("moment");
-const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Users?retryWrites=true&w=majority";
-/*
-    Our session token works as follows: It is a cookie
- */
 class UserController {
     /*
         Gets all users from the DB.
@@ -60,7 +55,7 @@ class UserController {
             res.status(200).send(doc);
         })
             .catch((err) => {
-            console.log(err);
+            console.log("WHAT THE FUCK IS GOING ONNNNNNNNNNNNNNNNNNN");
             res.status(401).json(err);
         });
     }
@@ -72,53 +67,75 @@ class UserController {
         console.log(req.body.password);
         const person = new user_1.default({
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
         });
+        if (req.body.rememberme) {
+            person.wantsRemember = true;
+        }
         person.save()
             .then((result) => {
-            res.status(200).json(result);
+            console.log("When we create a user we really are sending a 200 requset........");
+            console.log(result);
+            return res.status(200).send(result);
         })
             .catch((err) => {
+            console.log("shit fuck shit ");
             console.log(err);
             res.status(401).json(err);
         });
+        console.log(":(");
     }
-    checkRememberMe(req, res) {
-        if (!req.headers.authorization) {
-            res.status(401).send({ error: 'TokenMissing' });
+    /*
+    public checkRememberMe(req: express.Request, res:express.Response): void{
+
+        if(!req.headers.authorization){
+            res.status(401).send({error: 'TokenMissing'});
         }
+
         const token = req.headers.authorization.split(' ')[1];
-        let payload = null;
+
+
+        let payload:any = null;
+
         try {
-            payload = jwt.decode(token, config_1.default.TOKEN_SECRET);
+            payload = jwt.decode(token, Config.TOKEN_SECRET);
+        } catch(err){
+            res.status(401).send({error: "TokenInvalid"});
         }
-        catch (err) {
-            res.status(401).send({ error: "TokenInvalid" });
+
+        if(payload.exp <= moment().unix()){
+            res.status(401).send({error: 'TokenExpired'});
         }
-        if (payload.exp <= moment().unix()) {
-            res.status(401).send({ error: 'TokenExpired' });
-        }
-        user_1.default.findById(payload.sub, function (err, user) {
-            if (!user) {
-                res.status(401).send({ error: 'PersonNotFound' });
-            }
-            else {
+
+        User.findById(payload.sub, function(err, user){
+            if(!user){
+                res.status(401).send({error: 'PersonNotFound'});
+            }else{
                 req.body.user = payload.sub;
             }
         });
+
+
+
+
         const storedState = req.cookies ? req.cookies["remember-me"] : null;
-        if (storedState != null) {
+
+        if(storedState != null) {
             const list = storedState.split(":");
             //if we find the pair of username:storedState in the DB, then you are logged in. Otherwise you are not.
         }
-    }
+
+    }*/
     signup(req, res) {
+        console.log("we even make it here ?");
         //res.json({message : "signup successful", user: req.body.user});
     }
     /*
         handling login auth
      */
     login(req, res) {
+        console.log("HOORAH");
+        const rememberMeBool = req.body.rememberme;
         passport.authenticate("login", (err, user, info) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (err || !user) {
@@ -130,8 +147,35 @@ class UserController {
                         if (error) {
                             res.status(401).json("An Error Occurred");
                         }
+                        let payload = req.user;
+                        const rememberToken = jwt.sign(payload, "top_secret2");
+                        /*
+                        req.user.update({rememberMeToken: rememberToken}).then(
+                            (err:any) => {
+                                if(err)
+                                    console.log(err);
+
+                                console.log("it should've worked." + "::" + rememberToken);
+                            }
+                        );*/
+                        // @ts-ignore
+                        user_1.default.findOne({ _id: req.user._id }, (err, res) => {
+                            if (err) {
+                                console.log("err finding user");
+                            }
+                            else {
+                                res.update({ rememberMeToken: rememberToken });
+                                console.log(rememberToken);
+                            }
+                        });
+                        if (rememberMeBool) {
+                            res.cookie(config_1.default.TOKEN_SECRET, rememberToken);
+                        }
                         const body = { _id: user._id, email: user.email };
                         const token = jwt.sign({ user: body }, "top_secret");
+                        /*
+                            Handling of the remember me part of this shit
+                         */
                         return res.json({ token });
                     }));
                 }

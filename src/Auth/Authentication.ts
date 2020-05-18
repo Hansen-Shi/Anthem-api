@@ -27,10 +27,8 @@ passport.use("signup", new localStrategy({
 
         // call our create user endpoint
 
-        console.log(email + " " + password);
-
         const userInfo = {
-            url: "http://localhost:3000/api/user",
+            url: "http://localhost:3000/api/user-data",
             body: {
                 email,
                 password,
@@ -42,12 +40,12 @@ passport.use("signup", new localStrategy({
             if (!error && response.statusCode === 200) {
                 return done(null, user);
             } else {
-                done(error);
+                return done(error);
             }
         });
         return done();
     } catch (error) {
-        done(error);
+        return done(error);
     }
 }));
 
@@ -57,7 +55,7 @@ passport.use("login", new localStrategy({
 }, async (email: string, password: string, done: any) => {
     try {
         const userInfo = {
-            url: "http://localhost:3000/api/user",
+            url: "http://localhost:3000/api/user-data",
             body: {
                 email,
             },
@@ -80,31 +78,30 @@ passport.use("login", new localStrategy({
                     }
                 ).catch(
                     (err: any) => {
-                        done(err);
+                        return done(err);
                     }
                 );
             } else {
-                done(error);
+                return done(error);
             }
         });
     } catch (error) {
-        done(error);
+        return done(error);
     }
 }));
 
-passport.use(new JWTStrategy({
-
+passport.use("jwt", new JWTStrategy({
     secretOrKey: "top_secret",
-
-    jwtFromRequest: ExtractJWT.fromUrlQueryParameter("secret_token")
+    jwtFromRequest: ExtractJWT.fromHeader("secret_token")
 
 }, async (token: any, done: any) => {
+    console.log("WHAT THE FUCK IS GOING ON????????");
     try {
         // pass the user details to the next middleware
         return done(null, token.user);
 
     } catch (error) {
-        done(error);
+        return done(error);
     }
 }));
 

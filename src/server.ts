@@ -2,6 +2,7 @@
 import bodyParser from "body-parser";
 import express from "express";
 import {ApiRouter} from "./router";
+import {SecureApiRouter} from "./secureroutes";
 import * as querystring from "querystring";
 import cors from "cors";
 import * as request from "request";
@@ -24,10 +25,13 @@ class Application {
         this.port = +process.env.serverPort || 3000;
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
+        //this.app.use(passport.initialize())
         this.app.use(cors());
         this.app.use(bodyParser.json());
         this.initCors();
         mongoose.connect(uri).then( (r:any) => {}).catch((r:any) => {});
+        mongoose.connection.on("error", (error:Error) => console.log(error));
+        mongoose.Promise = global.Promise;
     }
     // Starts the server on the port specified in the environment or on port 3000 if none specified.
     public start(): void {
@@ -45,12 +49,14 @@ class Application {
             res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
             res.header("Access-Control-Allow-Credentials", "true");
-            next();
+            return next();
         });
     }
     // setup routes for the express server
     public buildRoutes(): void {
         this.app.use("/api", new ApiRouter().getRouter());
+        this.app.use("/user", passport.authenticate("jwt", {session: false}), new SecureApiRouter().getRouter());
+
     }
 
 }

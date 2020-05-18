@@ -83,4 +83,7 @@ export class PlaylistController {
             }
         });
     }
+    public home(req: express.Request, res: express.Response): void {
+        res.send({message: "wowsers"});
+    }
 }

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable */
 const mongoose_1 = require("mongoose");
 const user_1 = __importDefault(require("../models/user"));
-const uri = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/User?retryWrites=true&w=majority";
 exports.playlistSchema = new mongoose_1.Schema({
     userId: String,
     name: {
