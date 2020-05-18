@@ -16,7 +16,7 @@ const jwt = require("jsonwebtoken");
 const JWTStrategy = JWTPass.Strategy;
 const ExtractJWT = JWTPass.ExtractJwt;
 import StringUtilities from "../Utility/StringUtilities";
-import Config from "../config";
+import Config from "../secureconstants";
 import moment = require("moment");
 import login from "request";
 import {userInfo} from "os";
@@ -28,7 +28,6 @@ export class UserController {
         Gets all users from the DB.
      */
     public getAllUsers(req: express.Request, res: express.Response): void {
-        console.log("redirected to /hello");
 
         User.find()
             .exec()
@@ -54,7 +53,6 @@ export class UserController {
                 res.status(200).send(doc);
             })
             .catch((err) => {
-                console.log("WHAT THE FUCK IS GOING ONNNNNNNNNNNNNNNNNNN");
                 res.status(401).json(err);
             });
     }
@@ -63,8 +61,6 @@ export class UserController {
       Adds a user to the database upon the creation of an account
      */
     public createUser(req: express.Request, res: express.Response): void {
-        console.log(req.body.email);
-        console.log(req.body.password);
         const person = new User({
             email: req.body.email,
             password: req.body.password,
@@ -74,16 +70,11 @@ export class UserController {
         }
         person.save()
             .then((result) => {
-                console.log("When we create a user we really are sending a 200 requset........");
-                console.log(result);
                 return res.status(200).send(result);
             })
             .catch((err) => {
-                console.log("shit fuck shit ");
-                console.log(err);
                 res.status(401).json(err);
             });
-        console.log(":(")
     }
 
     /*
@@ -133,7 +124,6 @@ export class UserController {
 
 
     public signup(req: express.Request, res: express.Response): void{
-        console.log("we even make it here ?");
         //res.json({message : "signup successful", user: req.body.user});
     }
 
@@ -142,7 +132,6 @@ export class UserController {
      */
     public login(req: express.Request, res: express.Response): void {
 
-        console.log("HOORAH");
 
         const rememberMeBool = req.body.rememberme;
 
@@ -161,7 +150,7 @@ export class UserController {
 
 
 
-                        const rememberToken: string = jwt.sign(payload,"top_secret2");
+                        const rememberToken: string = jwt.sign(payload,Config.REM_SECRET);
 
                         /*
                         req.user.update({rememberMeToken: rememberToken}).then(
@@ -180,19 +169,18 @@ export class UserController {
                                console.log("err finding user");
                            }else{
                                res.update({rememberMeToken: rememberToken});
-                               console.log(rememberToken);
                            }
                         });
 
 
 
                         if(rememberMeBool){
-                            res.cookie(Config.TOKEN_SECRET,rememberToken);
+                            res.cookie("remember-me",rememberToken);
                         }
 
                         const body = {_id : user._id, email : user.email};
 
-                        const token = jwt.sign({user: body}, "top_secret");
+                        const token = jwt.sign({user: body}, Config.TOKEN_SECRET);
 
 
                         /*

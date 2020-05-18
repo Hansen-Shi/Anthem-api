@@ -30,6 +30,8 @@ class ApiRouter {
     getRouter() {
         this.router.get("/user-data", this.userController.getAUser);
         this.router.post("/user-data", this.userController.createUser);
+        this.router.get("/spotify/callback", this.spotifyController.callback);
+        this.router.get("/spotify/access_token", this.spotifyController.getAccessTokenFromRefreshToken);
         // tslint:disable-next-line
         this.router.post("/signup", passport.authenticate("signup", { session: false }), (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             return next(req.user);

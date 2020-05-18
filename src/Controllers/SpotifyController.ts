@@ -7,12 +7,10 @@ import * as querystring from "querystring";
 import * as request from "request";
 import User from "../models/user";
 import StringUtilities from "../Utility/StringUtilities";
+import Config from "../secureconstants";
 
-//delete later
-const myRefreshToken = 'AQBLMVmWctyknimCBa59GFEbpEvinUwtFOCkMy4iyqGqAToijW2rH_HsoE94l6hz_kTkTZNJMd_oXO69B6eLQL4bkfawEUo3hTQrxqTogvycHAqc8C9Ykt6A4Ow3OPtrZA0'
-
-const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
-const client_secret = "ba5a2acd5e174889a57ee849a81e92d8"; // Your secret
+const client_id = Config.SPOTIFY_CLIENT_ID; // Your client id
+const client_secret = Config.SPOTIFY_CLIENT_SECRET; // Your secret
 const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
 const stateKey = "spotify_auth_state";
 
@@ -25,22 +23,15 @@ export class SpotifyController {
 
         const authOptions = {
             body: {
-                refresh_token: myRefreshToken
+                // previously used my hard coded refresh token
+                refresh_token: "TODO"
             },
             url: 'http://localhost:3000/api/spotify_access_token',
             json: true
         };
-        /*
-        res.redirect('/api/hello' +
-                        querystring.stringify({
-                            error: 'invalid_token'
-                        }));
-         */
+
         request.get(authOptions, function (error, response, body) {
             if (!error && response.statusCode === 200) {
-                console.log("we got an access token")
-                console.log(body.access_token);
-
                 var options = {
                     url: 'https://api.spotify.com/v1/me/playlists',
                     headers: { 'Authorization': 'Bearer ' + body.access_token },
@@ -49,14 +40,13 @@ export class SpotifyController {
 
                 // use the access token to access the Spotify Web API
                 request.get(options, function (error, response, body) {
-                    console.log(body);
-                    res.redirect('/api/hello');
+                    res.redirect('/api/home');
                 });
 
             } else {
                 console.log(error);
                 console.log(response);
-                res.redirect('/api/hello');
+                res.redirect('/api/home');
             }
         });
 
@@ -71,6 +61,7 @@ export class SpotifyController {
         res.cookie(stateKey, state);
 
         // your application requests authorization
+        //TODO reduce the scopes
         const scope = "user-read-private " +
             "user-read-email " +
             "playlist-read-collaborative " +
@@ -127,17 +118,12 @@ export class SpotifyController {
 
         const code = req.query.code || null;
         const state = req.query.state || null;
-        console.log("logging cookies");
         const storedState = req.cookies ? req.cookies[stateKey] : null;
-        console.log(storedState + ":storedState");
-
         if (state === null || state !== storedState) {
-            console.log("THIS HAPPENS FUCK:");
-            res.redirect('/api/hello');
+            res.redirect('/api/home');
         } else {
-            console.log("THE GOD DAMNED STATES MATCH MY MAN");
             res.clearCookie(stateKey);
-            var authOptions = {
+            const authOptions = {
                 url: 'https://accounts.spotify.com/api/token',
                 form: {
                     code: code,
@@ -156,8 +142,8 @@ export class SpotifyController {
                     var access_token = body.access_token,
                         refresh_token = body.refresh_token;
 
-                    console.log(refresh_token);
-                    console.log(access_token);
+                    //console.log(refresh_token);
+                    //console.log(access_token);
                     //this is where we would store the refresh token in mongo
 
                     var options = {
@@ -170,9 +156,9 @@ export class SpotifyController {
                     request.get(options, function (error, response, body) {
                         console.log(body);
                     });
-                    res.redirect('/api/hello');
+                    res.redirect('/api/home');
                 } else {
-                    res.redirect('/api/hello' +
+                    res.redirect('/api/home' +
                         querystring.stringify({
                             error: 'invalid_token'
                         }));

@@ -15,6 +15,7 @@ import * as localpassport from "passport-local";
 import {IUserDocument} from "../Interfaces/IUserDocument";
 import {resolveAny} from "dns";
 import bcrypt from "bcrypt";
+import Config from "../secureconstants";
 
 const localStrategy = localpassport.Strategy;
 
@@ -91,11 +92,10 @@ passport.use("login", new localStrategy({
 }));
 
 passport.use("jwt", new JWTStrategy({
-    secretOrKey: "top_secret",
-    jwtFromRequest: ExtractJWT.fromHeader("secret_token")
+    secretOrKey: Config.TOKEN_SECRET,
+    jwtFromRequest: ExtractJWT.fromHeader(Config.TOKEN_KEY)
 
 }, async (token: any, done: any) => {
-    console.log("WHAT THE FUCK IS GOING ON????????");
     try {
         // pass the user details to the next middleware
         return done(null, token.user);

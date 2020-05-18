@@ -10,10 +10,6 @@ import Playlist from "../models/playlist";
 import User from "../models/user"
 import { disconnect, connect, Mongoose, Connection } from "mongoose";
 
-const client_id = "1191247894b54b3e9ea7590ed877e4b4"; // Your client id
-const client_secret = "ba5a2acd5e174889a57ee849a81e92d8"; // Your secret
-const redirect_uri = "http://localhost:3000/api/callback"; // Your redirect uri
-const stateKey = "spotify_auth_state";
 
 /*
     This is the controller for creating, updating, and deleting playlists. It must have a logged in user in the response body.
@@ -84,6 +80,6 @@ export class PlaylistController {
         });
     }
     public home(req: express.Request, res: express.Response): void {
-        res.send({message: "wowsers"});
+        res.send({message: "home"});
     }
 }

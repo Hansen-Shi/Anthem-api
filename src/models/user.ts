@@ -5,6 +5,7 @@ import validator from "validator";
 import { IUserDocument } from "../Interfaces/IUserDocument";
 const passport = require("passport");
 import * as JWTPass from "passport-jwt";
+import Config from "../secureconstants";
 
 const jwt = require("jsonwebtoken");
 
@@ -66,7 +67,6 @@ userSchema.pre<IUserDocument>("save", function(next) {
 
         bcrypt.hash(user.password, salt, function(err, hash) {
             if (err) {
-                console.log("Fuck right off cunt");
                 return next(err);
             }
 
@@ -74,17 +74,12 @@ userSchema.pre<IUserDocument>("save", function(next) {
             //Add remember me token to the DB for the user if they specified.
             if(user.wantsRemember || true) {
 
-                const rememberToken = jwt.sign(user.toJSON(), "top_secret2");
+                const rememberToken = jwt.sign(user.toJSON(), Config.REM_SECRET);
 
-                console.log(rememberToken);
                 user.updateOne({$addToSet: {"rememberMeTokens": rememberToken}}, (err: any, user:any) => {
                     if (err) {
-                        console.log("BRO.");
                         return next(err);
                     }
-                    console.log(err + ":eror????");
-                    console.log(user);
-                    console.log("remember token added to user");
                 }).exec().then(r => next(r));
             }
 

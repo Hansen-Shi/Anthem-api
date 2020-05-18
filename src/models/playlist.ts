@@ -23,9 +23,6 @@ export const playlistSchema = new Schema({
 playlistSchema.post<IPlaylistDocument>("save", function (next) {
     const playlistId = this._id.toString();
     if (User.exists({ _id: this.userId })) {
-        console.log("we down here");
-        console.log(this.userId);
-        console.log(playlistId);
 
         User.findOneAndUpdate(
             {_id:this.userId},

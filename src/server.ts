@@ -8,7 +8,8 @@ import cors from "cors";
 import * as request from "request";
 import cookieParser from "cookie-parser";
 import {disconnect, connect, Mongoose, Connection } from "mongoose";
-const uri: string = "mongodb+srv://God:passw0rd@anthem-app-ehl9n.mongodb.net/Anthem?retryWrites=true&w=majority";
+import Config from "./secureconstants";
+const uri: string = Config.DB_LINK;
 
 
 let mongoose = require('mongoose');
